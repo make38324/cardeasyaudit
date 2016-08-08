@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="titlebar_back">#ff1b90f7</color>
+    <color name="transparent">#00000000</color>
+    <color name="bar_black">#ff3c3f41</color>
+    <color name="dialog_red">#ff0000</color>
+    <color name="linecolor">#ffe6e6e6</color>
+    <color name="white">#ffffffff</color>
+    <color name="bwhite">#ffe3e2e2</color>
+    <color name="txtColor">#ff333333</color>
+    <color name="btnblue">#ff1b90f7</color>
+    <color name="black">#ff000000</color>
+    <color name="qblue">#86cdf9</color>
+    <color name="hint">#bababa</color>
+    <color name="hhint">#888888</color>
+    <color name="headhint">#eff0f2</color>
+    <color name="headtextdeap">#7d7d7d</color>
+    <color name="headtexthint">#8d8d8e</color>
+    <color name="d5">#d5d5d5</color>
+    <color name="d2">#d2d2d2</color>
+    <color name="t33">#333333</color>
+    <color name="t99">#999999</color>
+    <color name="t66">#666666</color>
+    <color name="priceblue">#1b90f7</color>
+    <color name="ic8">#c8c8c8</color>
+    <color name="bluebtnregister">#00a0f6</color>
+    <color name="bluebtnpwdfind">#68c6f9</color>
+    <color name="leftmenu_itemback">#4d6071</color>
+    <color name="gift_tab_bg">#2fb8fc</color>
+</resources>
