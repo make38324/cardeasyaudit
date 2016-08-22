@@ -19,7 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ShopAuditActivity"></activity>
+        <activity android:name=".ShopAuditActivity"  />
+        <activity android:name=".CheckImageActivity" android:theme="@style/StyleBottom"/>
     </application>
 
 </manifest>

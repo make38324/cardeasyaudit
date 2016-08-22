@@ -5,5 +5,5 @@ package com.swntek.czm.cardeasyaudit;
  * email：496950806@qq.com
  */
 public class ServerUrl {
-    public static String baseurl="http://106.75.31.240/";
+    public static String baseurl="http://106.75.32.3/";
 }

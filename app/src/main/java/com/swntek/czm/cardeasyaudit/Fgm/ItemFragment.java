@@ -12,8 +12,13 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.swntek.czm.cardeasyaudit.MainActivity;
 import com.swntek.czm.cardeasyaudit.R;
 import com.swntek.czm.cardeasyaudit.ShopAuditActivity;
+import com.swntek.czm.cardeasyaudit.adapter.CommonAdapter;
+import com.swntek.czm.cardeasyaudit.adapter.ViewHolder;
 import com.swntek.czm.cardeasyaudit.pojo.Audit;
 
 import org.greenrobot.eventbus.EventBus;
@@ -27,12 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/5/19.
+ * Created by caozhimin on 2016/5/19.
  */
 public class ItemFragment extends Fragment {
     private Context mContext;
     private TextView tv_content;
-    private ListView lv;
+    private PullToRefreshListView lv;
     private int index;
     private List<Audit> audits;
 
@@ -51,7 +56,23 @@ public class ItemFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = LayoutInflater.from(mContext).inflate(R.layout.lv, container, false);
-        lv= (ListView) root.findViewById(R.id.lv);
+        lv= (PullToRefreshListView) root.findViewById(R.id.lv);
+        lv.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        lv.getLoadingLayoutProxy(false, true).setPullLabel("上拉加载");
+        lv.getLoadingLayoutProxy(false, true).setRefreshingLabel("加载中....");
+        lv.getLoadingLayoutProxy(false, true).setReleaseLabel("松手加载");
+        lv.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                MainActivity mainActivity= (MainActivity) getActivity();
+                mainActivity.getNetData();
+            }
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+
+            }
+        });
 //        tv_content= (TextView) root.findViewById(R.id.tv_text);
 //        String title=getArguments().getString("title");
 //        tv_content.setText(title);
@@ -63,7 +84,13 @@ public class ItemFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onError(String s){
+        lv.onRefreshComplete();
+//        ViewInject.toast(getContext().getApplicationContext(),"网络或服务器异常");
+    }
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onEvent(List<Audit> datas) {
+        lv.onRefreshComplete();
         if(datas!=null&&datas.size()>0) {
             audits = new ArrayList<>();
             if (index == 0) {
@@ -88,12 +115,13 @@ public class ItemFragment extends Fragment {
                     }
                 }
             }
-            lv.setAdapter(new KJAdapter<Audit>(lv, audits, R.layout.item_fgm) {
+            lv.setAdapter(new CommonAdapter<Audit>(getContext(),audits,R.layout.item_fgm) {
+
                 @Override
-                public void convert(AdapterHolder helper, final Audit item, boolean isScrolling, int position) {
-                    helper.setText(R.id.tv_ymd, item.getCreate_date().split(" ")[0]);
-                    helper.setText(R.id.tv_time, item.getCreate_date().split(" ")[1]);
-                    helper.setText(R.id.tv_name, item.getName());
+                public void convert(ViewHolder holder, final Audit item, int position) {
+                    holder.setText(R.id.tv_ymd, item.getCreate_date().split(" ")[0]);
+                    holder.setText(R.id.tv_time, item.getCreate_date().split(" ")[1]);
+                    holder.setText(R.id.tv_name, item.getName());
                     String state;
                     if (item.getStatus().equals("1")) {
                         state = "审核通过";
@@ -102,8 +130,8 @@ public class ItemFragment extends Fragment {
                     } else {
                         state = "审核未通过";
                     }
-                    helper.setText(R.id.tv_state, state);
-                    helper.getView(R.id.root).setOnClickListener(new View.OnClickListener() {
+                    holder.setText(R.id.tv_state, state);
+                    holder.getView(R.id.root).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent=new Intent(getActivity(), ShopAuditActivity.class);
@@ -112,7 +140,7 @@ public class ItemFragment extends Fragment {
                         }
                     });
                 }
-            });
+            } );
         }
     }
     @Override

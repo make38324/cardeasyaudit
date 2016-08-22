@@ -61,6 +61,10 @@ public class MainActivity extends BaseBarActivity {
         adapter = new TabPageIndicatorAdapter(getSupportFragmentManager());
         vpPager.setAdapter(adapter);
         tpiIndicator.setViewPager(vpPager);
+        getNetData();
+    }
+
+    public void getNetData() {
         OkHttpUtils okHttpUtils = OkHttpUtils.getInstance();
         okHttpUtils.setConnectTimeout(4000, TimeUnit.SECONDS);
         okHttpUtils.post().url(ServerUrl.baseurl+"api/application_list.php").build().execute(new StringCallback() {
@@ -68,12 +72,20 @@ public class MainActivity extends BaseBarActivity {
             public void onResponse(String response) {
                 EventBus.getDefault().postSticky(audit);
             }
+
+            @Override
+            public void onError(Call call, Exception e) {
+                super.onError(call, e);
+                EventBus.getDefault().postSticky("网路连接失败");
+            }
+
             @Override
             public String parseNetworkResponse(Response response) throws IOException {
-//                String t=response.body().string();
-                String t="[{\"manager\":\"傻蛋\",\"name\":\"美发\",\"address\":\"地方\",\"phone\":\"2131\",\"status\":\"1\",\"create_date\":\"2016-08-23 16:11:26\",\"remark\":\"佛挡杀佛\"}]";
+                String t=response.body().string();
+//                String t="[{\"manager\":\"傻蛋\",\"name\":\"美发\",\"address\":\"地方\",\"phone\":\"2131\",\"status\":\"1\",\"create_date\":\"2016-08-23 16:11:26\",\"remark\":\"佛挡杀佛\"}]";
                 try{
-                    JSONArray jsonArray=new JSONArray(t);
+                    JSONObject jsonobj=new JSONObject(t);
+                    JSONArray jsonArray=jsonobj.optJSONArray("results");
                     audit.clear();
                     for(int i=0;i<jsonArray.length();i++){
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -89,7 +101,6 @@ public class MainActivity extends BaseBarActivity {
             }
         });
     }
-
 
     /**
      * ViewPager适配器
